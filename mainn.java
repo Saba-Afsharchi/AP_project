@@ -11,13 +11,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import sun.misc.Cleaner;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-
+import java.util.Vector;
 
 
 public class mainn extends Application{
@@ -35,7 +35,7 @@ public class mainn extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        System.out.println("hi")
+
 
         player1 = new Rectangle(200,150,20,20);
         player1.setFill(Color.CORAL);
@@ -72,24 +72,28 @@ public class mainn extends Application{
                     if (player1.getY() < 0) {
                         player1.setY(0);
                     }
+                    winner((int) player1.getX(), (int) player1.getY(),player2history);
                 }
                 else if (input.contains(KeyCode.DOWN)) {
                     player1.setY(player1.getY() + 10);
                     if (player1.getY() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setY(gameBoard.getHeight() - player1.getHeight());
                     }
+                    winner((int) player1.getX(), (int) player1.getY(),player2history);
                 }
                 else if (input.contains(KeyCode.RIGHT)) {
                     player1.setX(player1.getX() + 10);
                     if (player1.getX() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setX(gameBoard.getHeight() - player1.getHeight());
                     }
+                    winner((int) player1.getX(), (int) player1.getY(),player2history);
                 }
                 else if (input.contains(KeyCode.LEFT)) {
                     player1.setX(player1.getX() - 10);
                     if (player1.getX() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setX(gameBoard.getHeight() - player1.getHeight());
                     }
+                    winner((int) player1.getX(), (int) player1.getY(),player2history);
                 }
 
 
@@ -98,24 +102,28 @@ public class mainn extends Application{
                     if (player2.getY() < 0) {
                         player2.setY(0);
                     }
+                    winner((int) player2.getX(), (int) player2.getY(),player1history);
                 }
                 else if (input.contains(KeyCode.E)) {
                     player2.setY(player2.getY() - 10);
                     if (player2.getY() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setY(gameBoard.getHeight() - player2.getHeight());
                     }
+                    winner((int) player2.getX(), (int) player2.getY(),player1history);
                 }
                 else if (input.contains(KeyCode.F)) {
                     player2.setX(player2.getX() + 10);
                     if (player2.getX() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setX(gameBoard.getHeight() - player2.getHeight());
                     }
+                    winner((int) player2.getX(), (int) player2.getY(),player1history);
                 }
                 else if (input.contains(KeyCode.S)) {
                     player2.setX(player2.getX() - 10);
                     if (player2.getX() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setX(gameBoard.getHeight() - player2.getHeight());
                     }
+                    winner((int) player2.getX(), (int) player2.getY(),player1history);
                 }
                 //Player 1
                 if (input.contains(KeyCode.LEFT) || input.contains(KeyCode.RIGHT) || input.contains(KeyCode.UP) || input.contains(KeyCode.DOWN)) {
@@ -251,6 +259,22 @@ public class mainn extends Application{
             return (int) (sum / 2.0);
         }
     }
+
+    private ArrayList<Coordinate> History = new ArrayList<Coordinate>();
+    int x;
+    int y;
+    Pair<Integer, Integer> p = new Pair<>(x,y);
+    public void winner( int x , int y ,ArrayList History){
+
+        for(int i=0 ; i>= History.size();i++){
+            if (History.contains(p)) {
+                System.out.println("the end !");
+            }
+
+        }
+
+    }
+
 
     public static void main(String[] args) {
         launch(args);
