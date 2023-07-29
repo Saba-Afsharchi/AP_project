@@ -35,7 +35,7 @@ public class mainn extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        System.out.println("welcome!")
+        System.out.println("hi")
 
         player1 = new Rectangle(200,150,20,20);
         player1.setFill(Color.CORAL);
