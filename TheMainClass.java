@@ -12,15 +12,14 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import sun.misc.Cleaner;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
-import java.util.Vector;
 
 
-public class mainn extends Application{
+public class TheMainClass extends Application{
     private ArrayList<Coordinate> player1history = new ArrayList<Coordinate>();
     private ArrayList<Coordinate> player2history = new ArrayList<Coordinate>();
     private static final int MAX_POSITIONS = 1000;
@@ -30,6 +29,8 @@ public class mainn extends Application{
     AnimationTimer gameLoop;
     Set<KeyCode> input = new HashSet();
     Pane gameBoard;
+    int totalpoints1=0;
+    int totalpoints=0;
 
 
     @Override
@@ -62,69 +63,90 @@ public class mainn extends Application{
         VBox.setVgrow(gameBoard, Priority.ALWAYS);
         gameBoard.setOnKeyPressed(event -> input.add(event.getCode()));
         gameBoard.setOnKeyReleased(event -> input.remove(event.getCode()));
+        Scanner speedlevel = new Scanner(System.in);
+        System.out.println("Enter the desired speed of your choice ! ");
+        System.out.println("1.ten");
+        System.out.println("2.fifteen");
+        System.out.println("3.twenty");
         gameLoop = new AnimationTimer()
         {
+
+            int Speed = speedlevel.nextInt();
             @Override
             public void handle(long l)
             {
+
+
+
                 if (input.contains(KeyCode.UP)) {
-                    player1.setY(player1.getY() - 10);
+                    player1.setY(player1.getY() - Speed);
                     if (player1.getY() < 0) {
                         player1.setY(0);
+
                     }
                     winner((int) player1.getX(), (int) player1.getY(),player2history);
                 }
                 else if (input.contains(KeyCode.DOWN)) {
-                    player1.setY(player1.getY() + 10);
+                    player1.setY(player1.getY() + Speed);
                     if (player1.getY() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setY(gameBoard.getHeight() - player1.getHeight());
+
                     }
                     winner((int) player1.getX(), (int) player1.getY(),player2history);
                 }
                 else if (input.contains(KeyCode.RIGHT)) {
-                    player1.setX(player1.getX() + 10);
+                    player1.setX(player1.getX() + Speed);
                     if (player1.getX() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setX(gameBoard.getHeight() - player1.getHeight());
+
                     }
                     winner((int) player1.getX(), (int) player1.getY(),player2history);
                 }
                 else if (input.contains(KeyCode.LEFT)) {
-                    player1.setX(player1.getX() - 10);
+                    player1.setX(player1.getX() - Speed);
                     if (player1.getX() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setX(gameBoard.getHeight() - player1.getHeight());
+
                     }
                     winner((int) player1.getX(), (int) player1.getY(),player2history);
                 }
 
 
                 if (input.contains(KeyCode.D)) {
-                    player2.setY(player2.getY() + 10);
+                    player2.setY(player2.getY() + Speed);
                     if (player2.getY() < 0) {
                         player2.setY(0);
+
                     }
                     winner((int) player2.getX(), (int) player2.getY(),player1history);
                 }
                 else if (input.contains(KeyCode.E)) {
-                    player2.setY(player2.getY() - 10);
+                    player2.setY(player2.getY() - Speed);
                     if (player2.getY() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setY(gameBoard.getHeight() - player2.getHeight());
+
                     }
                     winner((int) player2.getX(), (int) player2.getY(),player1history);
                 }
                 else if (input.contains(KeyCode.F)) {
-                    player2.setX(player2.getX() + 10);
+                    player2.setX(player2.getX() + Speed);
                     if (player2.getX() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setX(gameBoard.getHeight() - player2.getHeight());
+
                     }
                     winner((int) player2.getX(), (int) player2.getY(),player1history);
                 }
                 else if (input.contains(KeyCode.S)) {
-                    player2.setX(player2.getX() - 10);
+                    player2.setX(player2.getX() - Speed);
                     if (player2.getX() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setX(gameBoard.getHeight() - player2.getHeight());
+
                     }
                     winner((int) player2.getX(), (int) player2.getY(),player1history);
                 }
+
+
+
                 //Player 1
                 if (input.contains(KeyCode.LEFT) || input.contains(KeyCode.RIGHT) || input.contains(KeyCode.UP) || input.contains(KeyCode.DOWN)) {
                     positionIndexplayer1[0]++;
@@ -141,9 +163,12 @@ public class mainn extends Application{
                     Coordinate player1coordinates = new Coordinate(x, y);
                     if (containListplayer1(x,y)) {
                         javafx.scene.shape.Polygon player1polygon = new Polygon();
+                        int numplgn = 0;
                         for (int i = Index_to_be_picked_plyr1; i <= player1history.size() - 1; i++) {
                             Coordinate coordinates = player1history.get(i);
                             ObservableList<Double> points1 = player1polygon.getPoints();
+                            numplgn++;
+
                             for (Coordinate vector : player1history) {
                                 points1.addAll((double) coordinates.getX(), (double) coordinates.getY());
                             }
@@ -152,9 +177,18 @@ public class mainn extends Application{
 
                         player1polygon.setFill(player1.getFill());
                         gameBoard.getChildren().add(player1polygon);
-                        System.out.println("player1 points : " + calculateShoelaceFormula(positionsplayer1,true));
+                        int totalpoints=0;
+                        for (int q=0 ;q<=numplgn ; q++){
+
+                           totalpoints= (int) (calculateShoelaceFormula(positionsplayer1,true) + totalpoints);
+                        }
+                        System.out.println("player1's points "+totalpoints);
+
                     }
+
                     player1history.add(player1coordinates);
+
+
                 }
 
                 //player2
@@ -174,9 +208,11 @@ public class mainn extends Application{
                     Coordinate player2coordinates = new Coordinate(x, y);
                     if (containlistplayer2(x,y)) {
                         Polygon player2polygon = new Polygon();
+                        int numplgn1 = 0;
                         for (int i = index_to_be_picked_plyr2; i <= player2history.size() - 1; i++) {
                             Coordinate coordinates = player2history.get(i);
                             ObservableList<Double> points2 = player2polygon.getPoints();
+                            numplgn1++;
                             for (Coordinate vector : player2history) {
                                 points2.addAll((double) coordinates.getX(), (double) coordinates.getY());
                             }
@@ -185,10 +221,22 @@ public class mainn extends Application{
 
                         player2polygon.setFill(player2.getFill());
                         gameBoard.getChildren().add(player2polygon);
-                        System.out.println("player2 points : " + calculateShoelaceFormula(positionsplayer2,true));
+                        int totalpoints1=0;
+                        for (int h=0 ;h<=numplgn1 ; h++){
+
+                            totalpoints1= (int) (calculateShoelaceFormula(positionsplayer1,true) + totalpoints1);
+                        }
+//                        System.out.println("player2's points "+totalpoints1);
+
+                        System.out.println("player2's points "+totalpoints1);
 
                     }
+
                     player2history.add(player2coordinates);
+
+
+
+
 
                 }
 
