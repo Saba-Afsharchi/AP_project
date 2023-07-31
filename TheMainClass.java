@@ -1,7 +1,10 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.Button;
@@ -11,12 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.util.Pair;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 
 public class TheMainClass extends Application{
@@ -25,6 +23,9 @@ public class TheMainClass extends Application{
     private static final int MAX_POSITIONS = 1000;
     private int Index_to_be_picked_plyr1;
     private int index_to_be_picked_plyr2;
+
+    static int xaxis;
+    static int yaxis;
     Rectangle player1, player2;
     AnimationTimer gameLoop;
     Set<KeyCode> input = new HashSet();
@@ -35,12 +36,8 @@ public class TheMainClass extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-
-
-        player1 = new Rectangle(200,150,20,20);
+        player1 = new Rectangle(50,50,20,20);
         player1.setFill(Color.CORAL);
-
 
         final double[][] positionsplayer1 = new double[MAX_POSITIONS][2];
         final double[][] positionsplayer2 = new double[MAX_POSITIONS][2];
@@ -49,105 +46,156 @@ public class TheMainClass extends Application{
         positionsplayer1[positionIndexplayer1[0]][0] = player1.getX();
         positionsplayer1[positionIndexplayer1[0]][1] = player1.getY();
 
-
-
-        player2 = new Rectangle(100,100,20,20);
+        player2 = new Rectangle(xaxis-50,50,20,20);
         player2.setFill(Color.AQUA);
 
         final int[] positionIndexplayer2 = {0};
         positionsplayer2[positionIndexplayer2[0]][0] = player2.getX();
         positionsplayer2[positionIndexplayer2[0]][1] = player2.getY();
 
-
-        gameBoard = new Pane(player1 , player2);
+        gameBoard = new Pane(player1,player2);
         VBox.setVgrow(gameBoard, Priority.ALWAYS);
         gameBoard.setOnKeyPressed(event -> input.add(event.getCode()));
         gameBoard.setOnKeyReleased(event -> input.remove(event.getCode()));
         Scanner speedlevel = new Scanner(System.in);
+
         System.out.println("Enter the desired speed of your choice ! ");
-        System.out.println("1.ten");
-        System.out.println("2.fifteen");
-        System.out.println("3.twenty");
+        System.out.println("1. 1");
+        System.out.println("2. 5");
+        System.out.println("3. 10");
+//        Label label = new Label();
+//        label.setText("Desired speed of your choice (1, 5, or 10):");
+//        TextField textField = new TextField();
+//        textField.setText("1");
+
+//        String textfields = textField.getText();
+//        int speed = Integer.parseInt(textfields);
+
+        Button btnStartGame = new Button("Play");
+        btnStartGame.setMaxWidth(Double.MAX_VALUE);
+        btnStartGame.setMaxWidth(Double.MAX_VALUE);
+
+        VBox root = new VBox(gameBoard,btnStartGame);
+        Scene scene = new Scene(root, xaxis, yaxis);
+        primaryStage.setTitle("welcome to paint i.o. !");
+//        root.getChildren().add(label);
+//        root.getChildren().add(textField);
+
         gameLoop = new AnimationTimer()
         {
-
             int Speed = speedlevel.nextInt();
             @Override
             public void handle(long l)
             {
 
-
-
                 if (input.contains(KeyCode.UP)) {
                     player1.setY(player1.getY() - Speed);
-                    if (player1.getY() < 0) {
+                       if (player1.getY() < 0) {
                         player1.setY(0);
-
                     }
-                    winner((int) player1.getX(), (int) player1.getY(),player2history);
+
+                    if(winner((int)player1.getX(),(int)player1.getY(),player2history)){
+                      restartGame(primaryStage);
+                   }
+
                 }
-                else if (input.contains(KeyCode.DOWN)) {
+
+                if (input.contains(KeyCode.DOWN)) {
                     player1.setY(player1.getY() + Speed);
+
+//                    for (int i = 0;i<=Speed;i++){
+//                        Coordinate coordinate = new Coordinate((int) player1.getX(), (int) (player1.getY()+i));
+//                        player1history.add(coordinate);
+//                    }
+
                     if (player1.getY() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setY(gameBoard.getHeight() - player1.getHeight());
-
                     }
-                    winner((int) player1.getX(), (int) player1.getY(),player2history);
+                    if(winner((int)player1.getX(),(int)player1.getY(),player2history)){
+                        restartGame(primaryStage);
+                    }
+
                 }
-                else if (input.contains(KeyCode.RIGHT)) {
+                if (input.contains(KeyCode.RIGHT)) {
                     player1.setX(player1.getX() + Speed);
+
+
+
                     if (player1.getX() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setX(gameBoard.getHeight() - player1.getHeight());
-
                     }
-                    winner((int) player1.getX(), (int) player1.getY(),player2history);
+                    if(winner((int)player1.getX(),(int)player1.getY(),player2history)){
+                        restartGame(primaryStage);
+                    }
+
                 }
-                else if (input.contains(KeyCode.LEFT)) {
+                if (input.contains(KeyCode.LEFT)) {
                     player1.setX(player1.getX() - Speed);
+
+
+
                     if (player1.getX() + player1.getHeight() > gameBoard.getHeight()) {
                         player1.setX(gameBoard.getHeight() - player1.getHeight());
-
                     }
-                    winner((int) player1.getX(), (int) player1.getY(),player2history);
+                    if(winner((int)player1.getX(),(int)player1.getY(),player2history)){
+                        restartGame(primaryStage);
+                    }
                 }
 
 
                 if (input.contains(KeyCode.D)) {
                     player2.setY(player2.getY() + Speed);
+
+                    for (int i = 0;i<=Speed;i++){
+                        Coordinate coordinate = new Coordinate((int) player2.getX(), (int) (player2.getY()+i));
+                        player2history.add(coordinate);
+                    }
                     if (player2.getY() < 0) {
                         player2.setY(0);
-
                     }
-                    winner((int) player2.getX(), (int) player2.getY(),player1history);
+                    if(winner((int)player2.getX(),(int)player2.getY(),player1history)){
+                        restartGame(primaryStage);
+                    }
+
+
                 }
                 else if (input.contains(KeyCode.E)) {
                     player2.setY(player2.getY() - Speed);
+
+
+
+
                     if (player2.getY() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setY(gameBoard.getHeight() - player2.getHeight());
-
                     }
-                    winner((int) player2.getX(), (int) player2.getY(),player1history);
+                    if(winner((int)player2.getX(),(int)player2.getY(),player1history)){
+                        restartGame(primaryStage);
+                    }
                 }
                 else if (input.contains(KeyCode.F)) {
                     player2.setX(player2.getX() + Speed);
+
+
                     if (player2.getX() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setX(gameBoard.getHeight() - player2.getHeight());
-
                     }
-                    winner((int) player2.getX(), (int) player2.getY(),player1history);
+                    if(winner((int)player2.getX(),(int)player2.getY(),player1history)){
+                        restartGame(primaryStage );
+                    }
                 }
                 else if (input.contains(KeyCode.S)) {
                     player2.setX(player2.getX() - Speed);
+
                     if (player2.getX() + player2.getHeight() > gameBoard.getHeight()) {
                         player2.setX(gameBoard.getHeight() - player2.getHeight());
-
                     }
-                    winner((int) player2.getX(), (int) player2.getY(),player1history);
+                    if(winner((int)player2.getX(),(int)player2.getY(),player1history)){
+                        restartGame(primaryStage);
+                    }
+
                 }
 
-
-
-                //Player 1
+                //Player 1 (draw polygon)
                 if (input.contains(KeyCode.LEFT) || input.contains(KeyCode.RIGHT) || input.contains(KeyCode.UP) || input.contains(KeyCode.DOWN)) {
                     positionIndexplayer1[0]++;
                     if (positionIndexplayer1[0] < MAX_POSITIONS) {
@@ -161,6 +209,7 @@ public class TheMainClass extends Application{
                     gameBoard.getChildren().add(player1fp);
 
                     Coordinate player1coordinates = new Coordinate(x, y);
+
                     if (containListplayer1(x,y)) {
                         javafx.scene.shape.Polygon player1polygon = new Polygon();
                         int numplgn = 0;
@@ -172,14 +221,12 @@ public class TheMainClass extends Application{
                             for (Coordinate vector : player1history) {
                                 points1.addAll((double) coordinates.getX(), (double) coordinates.getY());
                             }
-
                         }
 
                         player1polygon.setFill(player1.getFill());
                         gameBoard.getChildren().add(player1polygon);
                         int totalpoints=0;
                         for (int q=0 ;q<=numplgn ; q++){
-
                            totalpoints= (int) (calculateShoelaceFormula(positionsplayer1,true) + totalpoints);
                         }
                         System.out.println("player1's points "+totalpoints);
@@ -187,11 +234,9 @@ public class TheMainClass extends Application{
                     }
 
                     player1history.add(player1coordinates);
-
-
                 }
 
-                //player2
+                //player2 (draw polygon)
                 if(input.contains(KeyCode.E) || input.contains(KeyCode.S) || input.contains(KeyCode.D) || input.contains(KeyCode.F)){
 
                     positionIndexplayer2[0]++;
@@ -204,7 +249,6 @@ public class TheMainClass extends Application{
                     Rectangle player2fp = new Rectangle(x, y, 20, 20);
                     player2fp.setFill(player2.getFill());
                     gameBoard.getChildren().add(player2fp);
-
                     Coordinate player2coordinates = new Coordinate(x, y);
                     if (containlistplayer2(x,y)) {
                         Polygon player2polygon = new Polygon();
@@ -216,7 +260,6 @@ public class TheMainClass extends Application{
                             for (Coordinate vector : player2history) {
                                 points2.addAll((double) coordinates.getX(), (double) coordinates.getY());
                             }
-
                         }
 
                         player2polygon.setFill(player2.getFill());
@@ -226,46 +269,23 @@ public class TheMainClass extends Application{
 
                             totalpoints1= (int) (calculateShoelaceFormula(positionsplayer1,true) + totalpoints1);
                         }
-//                        System.out.println("player2's points "+totalpoints1);
-
                         System.out.println("player2's points "+totalpoints1);
 
                     }
-
                     player2history.add(player2coordinates);
-
-
-
-
-
                 }
-
-
-
-
-
             }
-
-
         };
 
 
-
-
-        Button btnStartGame = new Button("Play");
-        btnStartGame.setMaxWidth(Double.MAX_VALUE);
         btnStartGame.setOnAction((event) -> {
             gameBoard.requestFocus();
             gameLoop.start();
             btnStartGame.setDisable(true);
         });
-        VBox root = new VBox(gameBoard,btnStartGame);
-        Scene scene = new Scene(root, 500, 500);
 
-        primaryStage.setTitle("welcome to paint i.o. !");
         primaryStage.setScene(scene);
         primaryStage.show();
-
 
     }
     private boolean containListplayer1(float x, float y) {
@@ -311,20 +331,31 @@ public class TheMainClass extends Application{
     private ArrayList<Coordinate> History = new ArrayList<Coordinate>();
     int x;
     int y;
-    Pair<Integer, Integer> p = new Pair<>(x,y);
-    public void winner( int x , int y ,ArrayList History){
 
-        for(int i=0 ; i>= History.size();i++){
-            if (History.contains(p)) {
-                System.out.println("the end !");
-            }
+    public boolean winner(int x , int y , ArrayList<Coordinate> Fhistory){
+        for (Coordinate cr:Fhistory){
+            if ((cr.getX() == x) && (cr.getY() == y)) {
+                return true;
+                }
 
         }
+
+        return false;
+    }
+    private void restartGame(Stage primaryStage) {
+        System.out.println("The End !");
+        primaryStage.close();
 
     }
 
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Game board size (x): ");
+        xaxis = scanner.nextInt();
+        System.out.println("Game board size (y): ");
+        yaxis = scanner.nextInt();
+
         launch(args);
     }
 }
